@@ -41,6 +41,19 @@
       }) as string,
     );
   }
+  function getImageSize(
+    url: string,
+    callback: (size: { width: number; height: number }) => void,
+  ) {
+    const img = new Image();
+    img.onload = function () {
+      callback({ width: img.width, height: img.height });
+    };
+    img.onerror = function () {
+      console.error("Failed to load image");
+    };
+    img.src = url; // Ensure this is a valid PNG image URL
+  }
 
   $effect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -90,6 +103,10 @@
               // Embed an img element below the link
               if (mimeType?.startsWith("image")) {
                 const element = document.createElement("img");
+                getImageSize(url, size => {
+                  console.log({ size });
+                  element.style.width = `${size.width / 2}px`;
+                });
                 element.setAttribute("src", url);
                 element.style.display = "block";
                 e.style.display = "block";
